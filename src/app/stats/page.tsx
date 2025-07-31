@@ -79,7 +79,7 @@ export default function TeamStatsPage() {
       // Fetch recent activity (simplified)
       const { data: recentSituations } = await supabase
         .from('situations')
-        .select('id, title, created_at, user_profiles!situations_created_by_fkey(display_name)')
+        .select('id, question, created_at, user_profiles!situations_created_by_fkey(display_name)')
         .eq('team_id', userProfile.team_id)
         .order('created_at', { ascending: false })
         .limit(5)
@@ -87,7 +87,7 @@ export default function TeamStatsPage() {
       const recentActivity = (recentSituations || []).map(situation => ({
         id: situation.id.toString(),
         type: 'situation' as const,
-        title: situation.title,
+        title: situation.question, // Fixed: title → question
         user: (situation.user_profiles as any)?.display_name || 'Unbekannt',
         date: situation.created_at || ''
       }))
