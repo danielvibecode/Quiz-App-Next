@@ -83,12 +83,12 @@ export default function SituationDetailPage() {
           <div className="mt-4 flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                {situation.title}
+                {situation.question}
               </h1>
               <div className="mt-2 flex items-center space-x-3">
-                {situation.category && (
+                {situation.volleyball_category && (
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {situation.category}
+                    {situation.volleyball_category}
                   </span>
                 )}
                 {situation.difficulty && (

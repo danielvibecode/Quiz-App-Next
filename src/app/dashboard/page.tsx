@@ -296,14 +296,14 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {situations.slice(0, 6).map((situation) => (
                     <div key={situation.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <h4 className="font-medium text-gray-900 truncate">{situation.title}</h4>
-                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">{situation.description}</p>
+                      <h4 className="font-medium text-gray-900 truncate">{situation.question}</h4>
+                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">{situation.explanation}</p>
                       <div className="mt-2 flex items-center justify-between">
                         <span className="text-xs text-gray-400">
-                          {situation.category || 'Allgemein'}
+                          {situation.volleyball_category || 'Allgemein'}
                         </span>
                         <span className="text-xs text-gray-400">
-                          {situation.difficulty || 'Mittel'}
+                          {situation.difficulty_level || 'Mittel'}
                         </span>
                       </div>
                     </div>
