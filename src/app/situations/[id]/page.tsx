@@ -91,13 +91,13 @@ export default function SituationDetailPage() {
                     {situation.volleyball_category}
                   </span>
                 )}
-                {situation.difficulty && (
+                {situation.difficulty_level && (
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    situation.difficulty === 'einfach' ? 'bg-green-100 text-green-800' :
-                    situation.difficulty === 'mittel' ? 'bg-yellow-100 text-yellow-800' :
+                    situation.difficulty_level === 'einfach' ? 'bg-green-100 text-green-800' :
+                    situation.difficulty_level === 'mittel' ? 'bg-yellow-100 text-yellow-800' :
                     'bg-red-100 text-red-800'
                   }`}>
-                    {situation.difficulty}
+                    {situation.difficulty_level}
                   </span>
                 )}
               </div>
@@ -116,15 +116,15 @@ export default function SituationDetailPage() {
 
         <div className="space-y-6">
           {/* Description */}
-          {situation.description && (
+          {situation.explanation && (
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-3">Beschreibung</h3>
-              <p className="text-gray-700">{situation.description}</p>
+              <p className="text-gray-700">{situation.explanation}</p>
             </div>
           )}
 
           {/* Media */}
-          {(situation.image_url || situation.video_url) && (
+          {situation.image_url && (
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-3">Medien</h3>
               <div className="space-y-4">
@@ -132,16 +132,7 @@ export default function SituationDetailPage() {
                   <div>
                     <img
                       src={situation.image_url}
-                      alt={situation.title}
-                      className="max-w-full h-auto rounded-lg border"
-                    />
-                  </div>
-                )}
-                {situation.video_url && (
-                  <div>
-                    <video
-                      src={situation.video_url}
-                      controls
+                      alt={situation.question}
                       className="max-w-full h-auto rounded-lg border"
                     />
                   </div>

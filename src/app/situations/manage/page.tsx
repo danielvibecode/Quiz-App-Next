@@ -147,29 +147,29 @@ export default function ManageSituationsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3">
                         <h4 className="text-lg font-medium text-gray-900 truncate">
-                          {situation.title}
+                          {situation.question}
                         </h4>
                         <div className="flex space-x-2">
-                          {situation.category && (
+                          {situation.volleyball_category && (
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {situation.category}
+                              {situation.volleyball_category}
                             </span>
                           )}
-                          {situation.difficulty && (
+                          {situation.difficulty_level && (
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              situation.difficulty === 'einfach' ? 'bg-green-100 text-green-800' :
-                              situation.difficulty === 'mittel' ? 'bg-yellow-100 text-yellow-800' :
+                              situation.difficulty_level === 'einfach' ? 'bg-green-100 text-green-800' :
+                              situation.difficulty_level === 'mittel' ? 'bg-yellow-100 text-yellow-800' :
                               'bg-red-100 text-red-800'
                             }`}>
-                              {situation.difficulty}
+                              {situation.difficulty_level}
                             </span>
                           )}
                         </div>
                       </div>
                       
-                      {situation.description && (
+                      {situation.explanation && (
                         <p className="mt-1 text-sm text-gray-600 line-clamp-2">
-                          {situation.description}
+                          {situation.explanation}
                         </p>
                       )}
                       
@@ -189,12 +189,7 @@ export default function ManageSituationsPage() {
                             <span>📷 Bild</span>
                           </>
                         )}
-                        {situation.video_url && (
-                          <>
-                            <span>•</span>
-                            <span>🎥 Video</span>
-                          </>
-                        )}
+
                       </div>
                     </div>
                     

@@ -14,16 +14,13 @@ export default function CreateSituationPage() {
   const [error, setError] = useState('')
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
     question: '',
     category: '',
     difficulty: 'mittel',
     answers: ['', ''],
     correctAnswer: 0,
     explanation: '',
-    imageUrl: '',
-    videoUrl: ''
+    imageUrl: ''
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,17 +36,14 @@ export default function CreateSituationPage() {
       const { error: insertError } = await supabase
         .from('situations')
         .insert({
-          title: formData.title,
-          description: formData.description,
           question: formData.question,
-          category: formData.category || null,
-          difficulty: formData.difficulty || null,
+          volleyball_category: formData.category || null,
+          difficulty_level: formData.difficulty || null,
           answers: formData.answers,
           answer_count: formData.answers.length,
           correct_answer: formData.correctAnswer,
           explanation: formData.explanation || null,
-          image_url: formData.imageUrl || null,
-          video_url: formData.videoUrl || null,
+          image_url: formData.imageUrl || '',
           created_by: user.id,
           team_id: userProfile.team_id
         })
@@ -118,19 +112,7 @@ export default function CreateSituationPage() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Titel *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="z.B. Angriff von Position 4"
-                />
-              </div>
+
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -152,18 +134,7 @@ export default function CreateSituationPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Beschreibung
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                rows={3}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
-                placeholder="Kurze Beschreibung der Situation..."
-              />
-            </div>
+
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
