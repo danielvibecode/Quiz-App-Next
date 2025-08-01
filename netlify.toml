@@ -6,6 +6,7 @@
   NODE_VERSION = "18"
   NPM_VERSION = "9"
   SECRETS_SCAN_OMIT_PATHS = ".next/**,.netlify/**"
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_PROJECT_ID"
 
 # Next.js specific settings
 [[plugins]]
