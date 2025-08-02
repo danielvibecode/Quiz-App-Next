@@ -1,22 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import DashboardLayout from '@/components/ui/DashboardLayout'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { Tables } from '@/types/database'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
 import { 
-  ArrowLeftIcon,
   PencilIcon,
   TrashIcon,
-  EyeIcon
+  EyeIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline'
 
 export default function ManageSituationsPage() {
   const { user, userProfile } = useAuth()
   const [situations, setSituations] = useState<Tables<'situations'>[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     if (user && userProfile) {
@@ -48,14 +49,15 @@ export default function ManageSituationsPage() {
       if (error) throw error
       
       setSituations(data || [])
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch situations')
+    } catch (error) {
+      console.error('Error fetching situations:', error)
+      toast.error('Fehler beim Laden der Situationen')
     } finally {
       setLoading(false)
     }
   }
 
-  const deleteSituation = async (id: number) => {
+  const deleteSituation = async (id: string) => {
     if (!confirm('Sind Sie sicher, dass Sie diese Situation löschen möchten?')) {
       return
     }
@@ -69,31 +71,19 @@ export default function ManageSituationsPage() {
       if (error) throw error
 
       setSituations(prev => prev.filter(s => s.id !== id))
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete situation')
+      toast.success('Situation erfolgreich gelöscht')
+    } catch (error) {
+      console.error('Error deleting situation:', error)
+      toast.error('Fehler beim Löschen der Situation')
     }
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
         <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
-          >
-            <ArrowLeftIcon className="h-4 w-4 mr-1" />
-            Zurück zum Dashboard
-          </Link>
-          <div className="mt-4 flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
                 Situationen verwalten
@@ -104,131 +94,92 @@ export default function ManageSituationsPage() {
             </div>
             <Link
               href="/situations/create"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
+              <PlusIcon className="h-4 w-4 mr-2" />
               Neue Situation erstellen
             </Link>
           </div>
         </div>
 
-        {error && (
-          <div className="mb-6 rounded-md bg-red-50 p-4">
-            <div className="text-sm text-red-700">{error}</div>
+        {/* Content */}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-2 text-gray-600">Lade Situationen...</span>
           </div>
-        )}
-
-        {situations.length === 0 ? (
-          <div className="bg-white shadow rounded-lg p-8 text-center">
+        ) : situations.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-gray-500 mb-4">
+              <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Keine Situationen gefunden
+              Noch keine Situationen erstellt
             </h3>
-            <p className="text-gray-500 mb-4">
-              Erstelle deine erste Quiz-Situation, um loszulegen.
+            <p className="text-gray-600 mb-6">
+              Erstelle deine erste Quiz-Situation für dein Team.
             </p>
             <Link
               href="/situations/create"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
             >
+              <PlusIcon className="h-4 w-4 mr-2" />
               Erste Situation erstellen
             </Link>
           </div>
         ) : (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
-                {situations.length} Situation{situations.length !== 1 ? 'en' : ''} gefunden
-              </h3>
-            </div>
-            
-            <div className="divide-y divide-gray-200">
+          <div className="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul className="divide-y divide-gray-200">
               {situations.map((situation) => (
-                <div key={situation.id} className="p-6 hover:bg-gray-50">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-3">
-                        <h4 className="text-lg font-medium text-gray-900 truncate">
+                <li key={situation.id}>
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg font-medium text-gray-900 truncate">
                           {situation.question}
-                        </h4>
-                        <div className="flex space-x-2">
-                          {situation.volleyball_category && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {situation.volleyball_category}
-                            </span>
-                          )}
-                          {situation.difficulty_level && (
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              situation.difficulty_level === 'einfach' ? 'bg-green-100 text-green-800' :
-                              situation.difficulty_level === 'mittel' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {situation.difficulty_level}
-                            </span>
-                          )}
+                        </h3>
+                        <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {situation.volleyball_category}
+                          </span>
+                          <span>{situation.difficulty_level}</span>
+                          <span>{situation.answers?.length || 0} Antworten</span>
+                          <span>Erstellt: {new Date(situation.created_at).toLocaleDateString('de-DE')}</span>
                         </div>
                       </div>
-                      
-                      {situation.explanation && (
-                        <p className="mt-1 text-sm text-gray-600 line-clamp-2">
-                          {situation.explanation}
-                        </p>
-                      )}
-                      
-                      <p className="mt-2 text-sm text-gray-900 line-clamp-3">
-                        {situation.question}
-                      </p>
-                      
-                      <div className="mt-3 flex items-center text-sm text-gray-500 space-x-4">
-                        <span>{situation.answer_count} Antworten</span>
-                        <span>•</span>
-                        <span>
-                          Erstellt: {new Date(situation.created_at || '').toLocaleDateString('de-DE')}
-                        </span>
-                        {situation.image_url && (
-                          <>
-                            <span>•</span>
-                            <span>📷 Bild</span>
-                          </>
-                        )}
-
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => {/* TODO: Implement view */}}
+                          className="p-2 text-gray-400 hover:text-gray-600"
+                          title="Anzeigen"
+                        >
+                          <EyeIcon className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => {/* TODO: Implement edit */}}
+                          className="p-2 text-gray-400 hover:text-blue-600"
+                          title="Bearbeiten"
+                        >
+                          <PencilIcon className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => deleteSituation(situation.id)}
+                          className="p-2 text-gray-400 hover:text-red-600"
+                          title="Löschen"
+                        >
+                          <TrashIcon className="h-5 w-5" />
+                        </button>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center space-x-2 ml-4">
-                      <Link
-                        href={`/situations/${situation.id}`}
-                        className="inline-flex items-center p-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                        title="Vorschau"
-                      >
-                        <EyeIcon className="h-4 w-4" />
-                      </Link>
-                      
-                      {userProfile?.role === 'trainer' && situation.created_by === user?.id && (
-                        <>
-                          <Link
-                            href={`/situations/${situation.id}/edit`}
-                            className="inline-flex items-center p-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                            title="Bearbeiten"
-                          >
-                            <PencilIcon className="h-4 w-4" />
-                          </Link>
-                          
-                          <button
-                            onClick={() => deleteSituation(situation.id)}
-                            className="inline-flex items-center p-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50"
-                            title="Löschen"
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </button>
-                        </>
-                      )}
-                    </div>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

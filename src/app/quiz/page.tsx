@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import DashboardLayout from '@/components/ui/DashboardLayout'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { Tables } from '@/types/database'
 import Link from 'next/link'
-import { ArrowLeftIcon, PlayIcon } from '@heroicons/react/24/outline'
+import { PlayIcon } from '@heroicons/react/24/outline'
 
 export default function QuizPage() {
   const { userProfile } = useAuth()
@@ -52,17 +53,10 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
-          >
-            <ArrowLeftIcon className="h-4 w-4 mr-1" />
-            Zurück zum Dashboard
-          </Link>
-          <h1 className="mt-4 text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-gray-900">
             Quiz starten
           </h1>
           <p className="mt-2 text-gray-600">
@@ -251,6 +245,6 @@ export default function QuizPage() {
           </div>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

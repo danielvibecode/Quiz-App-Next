@@ -5,8 +5,9 @@
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
-  SECRETS_SCAN_OMIT_PATHS = ".next/**,.netlify/**"
-  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_PROJECT_ID"
+  # Erweiterte Secrets-Scanning-Ausschlüsse
+  SECRETS_SCAN_OMIT_PATHS = ".next/**,.netlify/**,*.md,README.md,MIGRATION_STATUS_CURRENT.md,windsurf_deployment.yaml,node_modules/**"
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_PROJECT_ID,NEXT_PUBLIC_SUPABASE_URL,NEXTAUTH_URL,NEXT_PUBLIC_BASE_URL"
 
 # Next.js specific settings
 [[plugins]]
