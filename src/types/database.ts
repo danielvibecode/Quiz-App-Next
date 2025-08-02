@@ -109,6 +109,51 @@ export type Database = {
           },
         ]
       }
+      quiz_results: {
+        Row: {
+          id: number
+          user_id: string
+          situation_id: number
+          selected_answer: number
+          is_correct: boolean
+          time_taken: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          user_id: string
+          situation_id: number
+          selected_answer: number
+          is_correct: boolean
+          time_taken?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          user_id?: string
+          situation_id?: number
+          selected_answer?: number
+          is_correct?: boolean
+          time_taken?: number | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_results_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_results_situation_id_fkey"
+            columns: ["situation_id"]
+            isOneToOne: false
+            referencedRelation: "situations"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       teams: {
         Row: {
           created_at: string | null
