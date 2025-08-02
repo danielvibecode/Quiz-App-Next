@@ -72,7 +72,12 @@ export default function PlayerDashboardPage() {
 
     const { data: results, error } = await supabase
       .from('quiz_results')
-      .select('*')
+      .select(`
+        *,
+        situations!inner(
+          volleyball_category
+        )
+      `)
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
@@ -97,7 +102,7 @@ export default function PlayerDashboardPage() {
     const totalQuizzes = results.length
     const correctAnswers = results.filter(r => r.is_correct).length
     const accuracyPercentage = (correctAnswers / totalQuizzes) * 100
-    const averageResponseTime = results.reduce((sum, r) => sum + r.response_time, 0) / totalQuizzes
+    const averageResponseTime = results.reduce((sum, r) => sum + (r.time_taken || 0), 0) / totalQuizzes
 
     // Calculate current streak
     let currentStreak = 0
@@ -112,7 +117,7 @@ export default function PlayerDashboardPage() {
     // Find best category
     const categoryStats: { [key: string]: { correct: number, total: number } } = {}
     results.forEach(result => {
-      const category = result.volleyball_category
+      const category = result.situations?.volleyball_category || 'Unknown'
       if (!categoryStats[category]) {
         categoryStats[category] = { correct: 0, total: 0 }
       }
@@ -133,11 +138,11 @@ export default function PlayerDashboardPage() {
     })
 
     const recentActivity = results.slice(0, 5).map(result => ({
-      id: result.id,
+      id: result.id.toString(),
       created_at: result.created_at,
       is_correct: result.is_correct,
-      volleyball_category: result.volleyball_category,
-      response_time: result.response_time
+      volleyball_category: result.situations?.volleyball_category || 'Unknown',
+      response_time: result.time_taken || 0
     }))
 
     setStats({
@@ -166,7 +171,13 @@ export default function PlayerDashboardPage() {
       return
     }
 
-    setAvailableSituations(situations || [])
+    setAvailableSituations((situations || []).map(s => ({
+      ...s,
+      id: s.id.toString(),
+      volleyball_category: s.volleyball_category || 'Unknown',
+      difficulty_level: s.difficulty_level || 'Medium',
+      created_at: s.created_at || new Date().toISOString()
+    })))
   }
 
   const getDifficultyColor = (difficulty: string) => {
